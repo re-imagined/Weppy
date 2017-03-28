@@ -6,27 +6,37 @@ import asyncio
 import logging
 import aiomysql
 
+logging.basicConfig(level=logging.INFO)
+
 
 def log(sql, args=()):
     logging.info('SQL: %s' % sql)
 
 
 @asyncio.coroutine
-def create_pool(loop, **kargs):
+def create_pool(loop, **kwargs):
     logging.info('creating database connection pool...')
     global __pool
     __pool = yield from aiomysql.create_pool(
-        host=kargs.get('host', 'localhost'),
-        port=kargs.get('port', 8800),
-        user=kargs['user'],
-        password=kargs['password'],
-        db=kargs['db'],
-        charset=kargs.get('charset', 'utf8'),
-        autocommit=kargs.get('autocommit', True),
-        maxsize=kargs('maxsize', 10),
-        minsize=kargs('minsize', 1),
+        host=kwargs.get('host', 'localhost'),
+        port=kwargs.get('port', 3306),
+        user=kwargs['user'],
+        password=kwargs['password'],
+        db=kwargs['db'],
+        charset=kwargs.get('charset', 'utf8'),
+        autocommit=kwargs.get('autocommit', True),
+        maxsize=kwargs.get('maxsize', 10),
+        minsize=kwargs.get('minsize', 1),
         loop=loop
     )
+
+
+@asyncio.coroutine
+def destory_pool():
+    global __pool
+    if __pool is not None:
+        __pool.close()
+        yield from __pool.wait_closed()
 
 
 @asyncio.coroutine
@@ -92,8 +102,8 @@ class StringField(Field):
 
 
 class BooleanField(Field):
-    def __init__(self, name=None, default=False):
-        super.__init__(name, 'boolean', False, default)
+    def __init__(self, name=None, default=None):
+        super().__init__(name, 'boolean', False, default)
 
     def __str__(self):
         return '<%s, %s:%s>' % (
@@ -132,7 +142,7 @@ class TextField(Field):
 class ModelMetaClass(type):
     # This metaclass will be used when creating model
     def __new__(cls, name, parents, attrs):
-        if name == "Modele":
+        if name == "Model":
             return type.__new__(cls, name, parents, attrs)
 
         table_name = attrs.get("__table_name__", None) or name
