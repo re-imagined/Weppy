@@ -96,9 +96,10 @@ class Field(object):
 
 class StringField(Field):
     def __init__(
-        self, name=None, primary_key=False, default=None, ddl='varchar(100)'
+        self, name=None, primary_key=False,
+        default=None, data_type='varchar(100)'
     ):
-        super().__init__(name, ddl, primary_key, default)
+        super().__init__(name, data_type, primary_key, default)
 
 
 class BooleanField(Field):
