@@ -17,6 +17,15 @@ def index(request):
 
 
 @asyncio.coroutine
+def logger_factory(app, handler):
+    @asyncio.coroutine
+    def logger(request):
+        logging.info('request: %s %s' % (request.method, request.path))
+        return (yield from handler(request))
+    return logger
+
+
+@asyncio.coroutine
 def init(loop):
     app = web.Application(loop=loop)
     app.router.add_route('GET', '/', index)
