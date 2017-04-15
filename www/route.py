@@ -5,13 +5,8 @@ import asyncio
 import os
 from aiohttp import web
 from urllib import parse
+from apis import APIError
 from functools import wraps, partial
-
-
-"""
-wraps is used to fetch the parameters from calling,
-but those parameters are not necessarily all the parameters we need
-"""
 
 
 def router(path, *, method):
