@@ -236,8 +236,8 @@ class Model(dict, metaclass=ModelMetaClass):
         order_by = kwargs.get('order_by', None)
         limit = kwargs.get('limit', None)
         if where:
-            sql.append['where']
-            sql.append[where]
+            sql.append('where')
+            sql.append(where)
         if args is None:
             args = []
         if order_by:

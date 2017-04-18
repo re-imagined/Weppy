@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <script src="http://lib.sinaapp.com/js/jquery/1.9.1/jquery-1.9.1.min.js"></script>
+    <script src="https://cdn.bootcss.com/vue/2.1.10/vue.min.js"></script>
+    <script src="../static/js/crypto.js"></script>
+    <script xmlns:v-on="http://www.w3.org/1999/xhtml">
+
+$(function () {
+    var vm = new Vue({
+        el: '#vm',
+        data:{
+            name: '',
+            password:''
+        },
+        // computed property for form validation state
+        computed: {
+            validation: function () {
+                return {
+                    password: !(this.password && this.password.length < 6)
+                }
+            },
+            isValid: function () {
+                var validation = this.validation
+                return Object.keys(validation).every(function (key) {
+                    return validation[key]
+                })
+            }
+        },
+        methods:{
+            submit: function(e){
+                e.preventDefault();
+                var $form = $('#vm');
+                var data = {
+                    name: this.name,
+                    password: CryptoJS.SHA1(this.name + ':' + this.password).toString()
+                };
+                console.log(data);
+                if(this.isValid){
+                    $.post('/api/login',data,function(rtn){
+                        console.log(rtn);
+                        // alert(rtn.admin);
+                        //
+                        // return location.assign('/');
+                    },'json');
+                }
+            }
+        }
+    });
+    $('#vm').show();
+});
+
+</script>
+  </head>
+  <body>
+
+
+<div class="uk-vertical-align uk-text-center uk-height-1-1">
+    <div class="uk-vertical-align-middle" style="width: 320px">
+        <p><a href="/" class="uk-icon-button"><i class="uk-icon-html5"></i></a> <a href="/">xsinx</a>
+        </p>
+        <form id="vm" v-on:submit="submit" class="uk-panel uk-panel-box uk-form">
+            <div class="uk-alert uk-alert-danger uk-hidden"></div>
+            <div class="uk-form-row">
+                <div class="uk-form-icon uk-width-1-1">
+                    <i class="uk-icon-envelope-o"></i>
+                    <input v-model="name" name="name" type="text" placeholder="用户名" maxlength="50"
+                           class="uk-width-1-1 uk-form-large">
+                </div>
+            </div>
+            <div class="uk-form-row">
+                <div class="uk-form-icon uk-width-1-1">
+                    <i class="uk-icon-lock"></i>
+                    <input v-model="password" name="password" type="password" placeholder="口令" maxlength="50"
+                           class="uk-width-1-1 uk-form-large">
+                </div>
+            </div>
+            <div class="uk-form-row">
+                <button type="submit" class="uk-width-1-1 uk-button uk-button-primary uk-button-large"><i
+                        class="uk-icon-sign-in"></i> 登录
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+  </body>
+</html>

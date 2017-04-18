@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <script src="http://lib.sinaapp.com/js/jquery/1.9.1/jquery-1.9.1.min.js"></script>
+    <script src="https://cdn.bootcss.com/vue/2.1.10/vue.min.js"></script>
+    <script src="../static/js/crypto.js"></script>
+    <script xmlns:v-on="http://www.w3.org/1999/xhtml">
+
+
+$(function () {
+    var vm = new Vue({
+        el: '#vm',
+        data:{
+            name: '',
+            password1: '',
+            password2: ''
+        },
+        // computed property for form validation state
+        computed: {
+            validation: function () {
+                return {
+                    name: this.name.trim(),
+                    password1: !(this.password1 && this.password1.length < 6),
+                    password2: this.password1 == this.password2
+                }
+            },
+            isValid: function () {
+                var validation = this.validation
+                return Object.keys(validation).every(function (key) {
+                    return validation[key]
+                })
+            }
+        },
+        methods:{
+            submit: function(e){
+                e.preventDefault();
+                var $form = $('#vm');
+                var user = {
+                    name: this.name.trim(),
+                    password: CryptoJS.SHA1(this.password1).toString()
+                };
+                console.log(user);
+                if(this.isValid){
+                    $.post('/api/sign_up',user,function(data){
+                        console.log(data);
+                        alert('恭喜您，注册成功！');
+                        return location.assign('/');
+                    },'json');
+
+                }
+            }
+        }
+    });
+    $('#vm').show();
+});
+
+</script>
+
+  </head>
+  <body>
+    <div class="uk-width-2-3">
+      <h1>欢迎注册！</h1>
+      <form id="vm" v-on:submit="submit" class="uk-form uk-form-stacked">
+          <ul class="uk-form-danger">
+              <li v-show="!validation.name">Name cannot be empty.</li>
+              <li v-show="!validation.password1">password len < 6.</li>
+              <li v-show="!validation.password2">Passwords not equal.</li>
+          </ul>
+          <div class="uk-alert uk-alert-danger uk-hidden"></div>
+          <div class="uk-form-row">
+              <label class="uk-form-label">名字:</label>
+              <div class="uk-form-controls">
+                  <input v-model="name" initial="off"  detect-change="off" type="text" maxlength="50" placeholder="名字" class="uk-width-1-1">
+              </div>
+          </div>
+          <div class="uk-form-row">
+              <label class="uk-form-label">输入口令:</label>
+              <div class="uk-form-controls">
+                  <input v-model="password1" initial="off"  detect-change="off" type="password" maxlength="50" placeholder="输入口令" class="uk-width-1-1">
+              </div>
+          </div>
+          <div class="uk-form-row">
+              <label class="uk-form-label">重复口令:</label>
+              <div class="uk-form-controls">
+                  <input v-model="password2" initial="off"  detect-change="off" type="password" maxlength="50" placeholder="重复口令" class="uk-width-1-1">
+              </div>
+          </div>
+          <div class="uk-form-row">
+              <button type="submit" class="uk-button uk-button-primary"><i class="uk-icon-user"></i> 注册</button>
+          </div>
+      </form>
+  </div>
+
+  </body>
+
+  <script>
+
+</script>
+</html>

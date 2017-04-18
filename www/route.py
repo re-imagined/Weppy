@@ -5,7 +5,7 @@ import asyncio
 import os
 from aiohttp import web
 from urllib import parse
-from apis import APIError
+from api_errors import APIError
 from functools import wraps, partial
 
 
@@ -13,16 +13,16 @@ def router(path, *, method):
     def decorator(func):
         @wraps(func)
         def wrapper(*args, **kwargs):
-            return func(*args)
-        wrapper.__method__ = "GET"
+            return func(*args, **kwargs)
+        wrapper.__method__ = method
         wrapper.__route__ = path
         return wrapper
     return decorator
 
 get = partial(router, method='GET')
 post = partial(router, method='POST')
-put = partial(router, method='PUT')
-delete = partial(router, method=r'DELETE')
+# put = partial(router, method='PUT')
+# delete = partial(router, method=r'DELETE')
 
 
 def get_kwargs(func):
@@ -148,7 +148,7 @@ class RequestHandler(object):
                         'Duplicate arg name in named arg and kwargs: %s' % key
                     )
                 kwargs[key] = value
-        if self._has_request_arg:
+        if self._has_request_args:
             kwargs['request'] = request
         if self._required_kwargs:
             for name in self._required_kwargs:
@@ -164,6 +164,7 @@ class RequestHandler(object):
 
 def add_static(app):
     path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static')
+    print("static: "+path)
     app.router.add_static('/static/', path)
     logging.info('add static %s => %s' % ('/static/', path))
 
