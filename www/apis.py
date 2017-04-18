@@ -48,12 +48,16 @@ def login(*, name, password):
 
 @post('/api/sign_up')
 def api_user_sign_up(*, name, password):
-    print(name, password)
+    """
+    password = sha1((uid + ':' + password).encode(utf-8))
+    """
     if not name or not name.strip():
         raise APIValueError('name')
     if not password or not _RE_SHA1.match(password):
         raise APIValueError('password')
+
     all_users = yield from User.find_all('name=?', [name])
+
     if len(all_users):
         raise APIError('sign up failed', 'name', 'User name already exist')
     uid = next_id()
