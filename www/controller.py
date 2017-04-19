@@ -3,10 +3,18 @@ from models import User
 from aiohttp import web
 from route import get, post
 import re, time, json, logging, hashlib, base64, asyncio
-from api_errors import APIValueError, APIResourceNotFoundError
+from api_errors import (APIValueError,
+                        APIResourceNotFoundError,
+                        APIPermissionError
+                        )
 from config import configs
 _COOKIE_KEY = configs['session']['secret']
 COOKIE_NAME = configs['cookie_name']
+
+
+def check_admin(request):
+    if request.__user__ is None or not request.__user__.admin:
+        raise APIPermissionError('user is None or not an admin.')
 
 
 def generate_cookie(user, max_age):

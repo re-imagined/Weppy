@@ -10,7 +10,7 @@ logging.basicConfig(level=logging.INFO)
 
 
 def log(sql, args=()):
-    logging.info('SQL: %s' % sql)
+    logging.info('SQL & args: %s, %s' % (sql, args))
 
 
 @asyncio.coroutine
@@ -255,6 +255,7 @@ class Model(dict, metaclass=ModelMetaClass):
                 raise ValueError(
                     'Invalid limit value : %s ' % str(limit)
                 )
+        # print('sql:', sql, 'args: ', args)
         results = yield from select(' '.join(sql), args)
         return [cls(**r) for r in results]
 

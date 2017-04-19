@@ -16,23 +16,20 @@ COOKIE_NAME = configs['cookie_name']
 
 @post('/api/login')
 def login(*, name, password):
+    print(name, password)
     if not name:
         raise APIValueError('name', 'Invalid name.')
     if not password:
         raise APIValueError('password', 'Invalid password.')
-    users = yield from User.find_all('name=?', [name])
+    users = yield from User.find_all('name=?', (name,))
     if len(users) == 0:
         raise APIValueError('name', 'user name not exist.')
     user = users[0]
-    print(user)
-    # check password:
-    sha1 = hashlib.sha1()
-    sha1.update(user.id.encode('utf-8'))
-    sha1.update(b':')
-    sha1.update(password.encode('utf-8'))
+    sha1_password = '%s:%s' % (user.id, password)
+    password = hashlib.sha1(sha1_password.encode('utf-8')).hexdigest()
+
     if user.password != password:
         raise APIValueError('password', 'Invalid password.')
-    # authenticate ok, set cookie:
     r = web.Response()
     r.set_cookie(
         COOKIE_NAME,

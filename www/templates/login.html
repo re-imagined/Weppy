@@ -35,7 +35,7 @@ $(function () {
                 var $form = $('#vm');
                 var data = {
                     name: this.name,
-                    password: CryptoJS.SHA1(this.name + ':' + this.password).toString()
+                    password: CryptoJS.SHA1(this.password).toString()
                 };
                 console.log(data);
                 if(this.isValid){
