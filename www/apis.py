@@ -14,13 +14,11 @@ _RE_SHA1 = re.compile(r'^[0-9a-f]{40}$')
 
 @post('/api/login')
 def login(*, name, password):
-    print(name, password)
     if not name:
         raise APIValueError('name', 'Invalid name.')
     if not password:
         raise APIValueError('password', 'Invalid password.')
     users = yield from User.find_all('name=?', (name,))
-    print(users)
     if len(users) == 0:
         raise APIValueError('name', 'user name not exist.')
     user = users[0]
@@ -77,7 +75,6 @@ def api_add_blog(
         request, *, title, title_en, summary, content, created_at, categery_id
 ):
     # check_admin(request)
-    print(title, title_en, summary, content, created_at, categery_id)
     if not title or not title.strip():
         raise APIValueError('title', 'title cannot be empty.')
     if not title_en or not title_en.strip():
@@ -139,7 +136,6 @@ def api_add_categery(request, *, name):
     # check_admin(request)
     if not name or not name.strip():
         raise APIValueError('name', 'name cannot be empty.')
-    print("name:"+name)
     categery = Categery(name=name.strip())
     yield from categery.save()
     return categery

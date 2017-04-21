@@ -255,7 +255,6 @@ class Model(dict, metaclass=ModelMetaClass):
                 raise ValueError(
                     'Invalid limit value : %s ' % str(limit)
                 )
-        # print('sql:', sql, 'args: ', args)
         results = yield from select(' '.join(sql), args)
         return [cls(**r) for r in results]
 
@@ -292,7 +291,6 @@ class Model(dict, metaclass=ModelMetaClass):
     @asyncio.coroutine
     def save(self):
         args = list(map(self.getValueOrDefault, self.__fields__))
-        print('insert args:%s' % args)
         args.append(self.getValueOrDefault(self.__primary_key__))
         rows = yield from execute(self.__insert__, args)
         if rows != 1:

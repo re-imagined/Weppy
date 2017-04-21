@@ -103,7 +103,6 @@ class RequestHandler(object):
 
     @asyncio.coroutine
     def __call__(self, request):
-        print(request)
         kwargs = None
         if (self._has_var_kwargs or self._has_named_kwargs or
                 self._required_kwargs):
@@ -149,7 +148,6 @@ class RequestHandler(object):
                         'Duplicate arg name in named arg and kwargs: %s' % key
                     )
                 kwargs[key] = value
-        # print(name, self._required_kwargs)
         if self._has_request_args:
             kwargs['request'] = request
         if self._required_kwargs:
@@ -168,7 +166,6 @@ class RequestHandler(object):
 
 def add_static(app):
     path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static')
-    print("static: "+path)
     app.router.add_static('/static/', path)
     logging.info('add static %s => %s' % ('/static/', path))
 
