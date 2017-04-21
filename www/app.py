@@ -9,6 +9,7 @@ import datetime
 from aiohttp import web
 from route import add_routes, add_static
 from jinja2 import Environment, FileSystemLoader
+from controller import get_user_by_cookie, COOKIE_NAME
 
 logging.basicConfig(level=logging.INFO)
 
@@ -108,6 +109,22 @@ def response_factory(app, handler):
         response.content_type = 'text/plain;charset=utf-8'
         return response
     return response
+
+
+@asyncio.coroutine
+def auth_factory(app, handler):
+    @asyncio.coroutine
+    def auth(request):
+        logging.info('check user: %s %s' % (request.method, request.path))
+        request.__user__ = None
+        cookie_str = request.cookies.get(COOKIE_NAME)
+        if cookie_str:
+            user = yield from get_user_by_cookie(cookie_str)
+            if user:
+                logging.info('set current user: %s' % user.id)
+                request.__user__ = user
+        return (yield from handler(request))
+    return auth
 
 
 def datetime_filter(t):

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <script src="http://lib.sinaapp.com/js/jquery/1.9.1/jquery-1.9.1.min.js"></script>
+    <script src="https://cdn.bootcss.com/vue/2.1.10/vue.min.js"></script>
+    <script>
+    var
+        ID = '{{ id }}',
+        action = '{{ action }}';
+        // alert(action);
+    function initVM(categery) {
+        var vm = new Vue({
+            el: '#vm',
+            data: categery,
+            methods: {
+                submit: function (event) {
+                    event.preventDefault();
+                    $.post(action, this.$data, function (r, status,xhr) {
+                        {
+                            alert(status);
+                            if(status == 'success'){
+                                return location.assign('/categery/' + r.id);
+                                // return location.assign('/x/admin/categeries');
+                            }
+                        }
+                    },'json');
+                }
+            }
+        });
+        $('#vm').show();
+    }
+
+    $(function () {
+        if (ID) {
+            $.getJSON('/api/get_categery/' + ID, function (categery, status) {
+                $('#loading').hide();
+               // alert(categery);
+                initVM(categery);
+            });
+        }
+        else {
+            $('#loading').hide();
+            initVM({
+                name: ''
+            });
+        }
+    });
+    </script>
+  </head>
+  <body>
+
+   <div id="error" class="">
+   </div>
+
+   <div id="loading" class="">
+       <span>正在加载...</span>
+   </div>
+
+   <div id="vm" class="">
+       <form v-on:submit="submit" class="">
+           <div class=""></div>
+           <div class="">
+               <label class="">categery name</label>
+               <div class="">
+                   <input v-model="name" name="name" type="text" placeholder="标题" class="">
+               </div>
+           </div>
+           <div class="">
+               <button type="submit" class="">保存</button>
+           </div>
+       </form>
+   </div>
+  </body>
+</html>

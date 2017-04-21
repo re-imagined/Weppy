@@ -25,9 +25,7 @@ class User(Model):
 
 class Blog(Model):
     __table_name__ = 'blog'
-    id = StringField(
-        primary_key=True, default=next_id, data_type='varchar(50)'
-    )
+    id = IntegerField(primary_key=True)
     title = StringField(data_type='varchar(50)')
     title_en = StringField(data_type='varchar(50)')  # english title for url
     summary = StringField(data_type='varchar(200)')
@@ -40,16 +38,12 @@ class Blog(Model):
 
 class Categery(Model):
     __table_name__ = 'categery'
-    id = StringField(
-        primary_key=True, default=next_id, data_type='varchar(50)'
-    )
+    id = IntegerField(primary_key=True)
     name = StringField(data_type='varchar(50)')
 
 
 class Tag(Model):
     __table_name__ = 'tag'
-    id = StringField(
-        primary_key=True, default=next_id, data_type='varchar(50)'
-    )
+    id = IntegerField(primary_key=True)
     name = StringField(data_type='varchar(50)')
     blog_id = IntegerField()

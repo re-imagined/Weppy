@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <script src="http://lib.sinaapp.com/js/jquery/1.9.1/jquery-1.9.1.min.js"></script>
+    <script src="https://cdn.bootcss.com/vue/2.1.10/vue.min.js"></script>
+    <script>
+    var
+        ID = '{{ id }}',
+        action = '{{ action }}';
+        // alert(action);
+    function initVM(blog) {
+        var vm = new Vue({
+            el: '#vm',
+            data: blog,
+            methods: {
+                submit: function (event) {
+                    event.preventDefault();
+                    $.post(action, this.$data, function (r, status,xhr) {
+                        {
+                            alert(status);
+                            if(status == 'success'){
+                                // return location.assign('/blog/' + r.id);
+                                // return location.assign('/x/admin/blogs');
+                            }
+                        }
+                    },'json');
+                }
+            }
+        });
+        $('#vm').show();
+    }
+
+    $(function () {
+        if (ID) {
+            $.getJSON('/api/get_blog/' + ID, function (blog, status) {
+                $('#loading').hide();
+               // alert(blog);
+                initVM(blog);
+            });
+        }
+        else {
+            $('#loading').hide();
+            initVM({
+                title: '',
+                title_en: '',
+                summary: '',
+                content: '',
+                created_at: '',
+                categery_id: ''
+            });
+        }
+    });
+    </script>
+  </head>
+  <body>
+
+   <div id="error" class="">
+   </div>
+
+   <div id="loading" class="">
+       <span><i class=""></i> 正在加载...</span>
+   </div>
+
+   <div id="vm" class="">
+       <form v-on:submit="submit" class="">
+           <div class=""></div>
+           <div class="">
+               <label class="">标题:</label>
+               <div class="">
+                   <input v-model="title" name="title" type="text" placeholder="标题" class="">
+               </div>
+           </div>
+           <div class="">
+               <label class="">英文标题:</label>
+               <div class="">
+                   <input v-model="title_en" rows="4" name="title_en" placeholder="英文标题" class=""></textarea>
+               </div>
+           </div>
+           <div class="">
+               <label class="">摘要:</label>
+               <div class="">
+                   <textarea v-model="summary" rows="4" name="summary" placeholder="摘要" class=""></textarea>
+               </div>
+           </div>
+           <div class="">
+               <label class="">内容:</label>
+               <div class="">
+                   <textarea v-model="content" rows="16" name="content" placeholder="内容" class=""></textarea>
+               </div>
+           </div>
+           <div class="">
+               <label class="">创建时间:</label>
+               <div class="">
+                   <input v-model="created_at" rows="16" name="created_at" placeholder="创建时间" class=""></textarea>
+               </div>
+           </div>
+           <div class="">
+               <label class="">分类:</label>
+               <select v-model="categery_id" name="categery_id" >
+                   {% for categery in all_categeries %}
+                   <option value ="{{ categery.id }}">{{ categery.name }}</option>
+                   {% endfor %}
+               </select>
+           </div>
+           title, title_en, summary, content, created_at, categery_id
+           <div class="">
+               <button type="submit" class=""></i> 保存</button>
+           </div>
+       </form>
+   </div>
+
+  </body>
+</html>

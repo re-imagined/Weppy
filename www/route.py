@@ -103,6 +103,7 @@ class RequestHandler(object):
 
     @asyncio.coroutine
     def __call__(self, request):
+        print(request)
         kwargs = None
         if (self._has_var_kwargs or self._has_named_kwargs or
                 self._required_kwargs):
@@ -148,12 +149,15 @@ class RequestHandler(object):
                         'Duplicate arg name in named arg and kwargs: %s' % key
                     )
                 kwargs[key] = value
+        # print(name, self._required_kwargs)
         if self._has_request_args:
             kwargs['request'] = request
         if self._required_kwargs:
             for name in self._required_kwargs:
                 if name not in kwargs:
-                    return web.HTTPBadRequest('Missing argument: %s' % name)
+                    return web.HTTPBadRequest(
+                        'Missing argument: %s not in %s' % (name, kwargs)
+                    )
         logging.info('call with args: %s' % str(kwargs))
         try:
             r = yield from self._func(**kwargs)

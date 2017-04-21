@@ -60,7 +60,7 @@ def select(sql, args, size=None):
 @asyncio.coroutine
 def execute(sql, args):
     # excute insert, update, delete
-    log(sql)
+    log(sql, args)
     with (yield from __pool) as connection:
         try:
             cursor = yield from connection.cursor()
@@ -292,6 +292,7 @@ class Model(dict, metaclass=ModelMetaClass):
     @asyncio.coroutine
     def save(self):
         args = list(map(self.getValueOrDefault, self.__fields__))
+        print('insert args:%s' % args)
         args.append(self.getValueOrDefault(self.__primary_key__))
         rows = yield from execute(self.__insert__, args)
         if rows != 1:

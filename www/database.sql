@@ -5,35 +5,35 @@ create database weppy;
 use weppy;
 
 create table user (
-    `id` varchar(50) not null,
-    `password` varchar(50) not null,
-    `is_admin` bool not null,
-    `name` varchar(50) not null,
-    `created_at` varchar(50) not null,
+    `id` varchar(50) not null comment 'id of the user',
+    `password` varchar(50) not null comment 'password of the user',
+    `is_admin` bool not null comment 'set 1 if the user is an admin',
+    `name` varchar(50) not null comment 'name of user',
+    `created_at` varchar(50) not null comment 'create time',
     key `idx_created_at` (`created_at`),
     primary key (`id`)
 ) engine=innodb default charset=utf8;
 
 create table blog (
-    `id` varchar(50) not null,
-    `title` varchar(50) not null,
-    `title_en` varchar(50) not null,
-    `summary` varchar(200) not null,
-    `content` mediumtext not null,
-    `created_at` varchar(50) not null,
-    `categery_id` int not null,
+    `id` bigint(20) not null auto_increment comment 'id of user',
+    `title` varchar(50) not null comment 'title of the blog',
+    `title_en` varchar(50) not null comment 'English title used in url',
+    `summary` varchar(200) not null comment 'first few lines of the blog',
+    `content` mediumtext not null comment 'content of the blog',
+    `created_at` varchar(50) not null comment 'create time',
+    `categery_id` varchar(50) not null comment 'id of categery',
     key `idx_created_at` (`created_at`),
     primary key (`id`)
 ) engine=innodb default charset=utf8;
 
-create table Categery (
-    `id` varchar(50) not null,
-    `name` varchar(50) not null,
+create table categery (
+    `id` bigint(20) not null auto_increment comment 'id of the categery',
+    `name` varchar(50) not null comment 'name of the categery',
     primary key (`id`)
 ) engine=innodb default charset=utf8;
 
-create table Tag (
-    `id` varchar(50) not null,
+create table tag (
+    `id` bigint(20) not null auto_increment,
     `name` varchar(50) not null,
     primary key (`id`)
 ) engine=innodb default charset=utf8;
