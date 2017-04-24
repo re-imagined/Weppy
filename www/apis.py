@@ -182,7 +182,7 @@ def api_get_blog(request, *, blog_id):
 
 
 @get('/api/get_blogs')
-def api_get_blogs(*, page='1'):
+def api_get_blogs(request, *, page='1'):
     """
     get blogs by the given page information
     """
@@ -195,4 +195,7 @@ def api_get_blogs(*, page='1'):
     blogs = yield from Blog.find_all(
         orderBy='created_at desc', limit=(page.offset, page.limit)
     )
+    for blog in blogs:
+        time = str(blog.created_at).split()
+        blog.created_at = time[0]
     return dict(page=page, blogs=blogs)

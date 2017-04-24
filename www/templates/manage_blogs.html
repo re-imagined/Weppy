@@ -3,6 +3,9 @@
   <head>
     <meta charset="utf-8">
     <title></title>
+    <script src="http://lib.sinaapp.com/js/jquery/1.9.1/jquery-1.9.1.min.js"></script>
+    <script src="https://cdn.bootcss.com/vue/2.1.10/vue.min.js"></script>
+    <script src="../../static/js/crypto.js"></script>
     <script>
 function initVM(data) {
         Vue.filter("datetime", function (value) {   //全局方法 Vue.filter() 注册一个自定义过滤器,必须放在Vue实例化前面
@@ -37,8 +40,7 @@ function initVM(data) {
 }
 $(function() {
 
-    $.getJSON('/api/blogs',{page:'{{page_index}}'},function(results) {
-        $('#loading').hide();
+    $.getJSON('/api/get_blogs',{page:'{{page_index}}'},function(results) {
         initVM(results);
     });
 
@@ -46,13 +48,6 @@ $(function() {
 </script>
   </head>
   <body>
-        <div id="error" class="">
-        </div>
-
-        <div id="loading" class="">
-            <span> 正在加载...</span>
-        </div>
-
         <div id="vm" class="">
             <a href="/x/admin/blogs/add_blog" class="">新日志</a>
 
@@ -67,10 +62,10 @@ $(function() {
                 <tbody>
                     <tr v-for="blog in blogs" >
                         <td>
-                            <a target="_blank" v-bind:href="'/blog/'+blog.id" v-text="blog.name+' / '+blog.summary"></a>
+                            <a target="_blank" v-bind:href="'/blog/'+blog.id" v-text="blog.title+' / '+blog.summary"></a>
                         </td>
                         <td>
-                            <span>${blog.created_at | datetime}</span>
+                            <span>${blog.created_at}</span>
                         </td>
                         <td>
                             <a href="#0" v-on:click ="edit_blog(blog)">编辑</a>

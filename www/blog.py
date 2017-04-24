@@ -2,7 +2,7 @@
 import markdown2
 from route import get
 from models import User, Blog, Categery
-from controller import get_page_index, check_admin, login
+from controller import get_page_index
 
 
 @get('/blogs')
@@ -73,6 +73,7 @@ def get_blog_by_title_en(request, *, title_en):
 
 @get('/x/admin/manage_blogs')
 def manage_blogs(*, page='1'):
+    print(page)
     return dict(
         __template__='manage_blogs.html',
         page_index=get_page_index(page)
