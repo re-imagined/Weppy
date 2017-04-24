@@ -5,11 +5,14 @@ import time
 import logging
 import hashlib
 import asyncio
+from route import get
+from aiohttp import web
 from models import User
 from config import configs
-from route import get
 from api_errors import APIPermissionError
+
 logging.basicConfig(level=logging.INFO)
+
 _COOKIE_KEY = configs['session']['secret']
 COOKIE_NAME = configs['cookie_name']
 
@@ -28,17 +31,23 @@ def login():
     }
 
 
-@asyncio.coroutine
+@get('/logout')
+def logout():
+    r = web.Response()
+    r.del_cookie(COOKIE_NAME)
+    r.content_type = 'application/json'
+    r.body = None
+    return r
+
+
 def check_admin(request):
-    logging.info('checking admin')
-    if (not request or request.__user__ is None or
-            not request.__user__.is_admin):
-        raise APIPermissionError('user is None or not an admin.')
-    user = yield from User.find(request.__user__.id)
-    if user.is_admin != 1:
-        raise APIPermissionError('user is None or not an admin.')
-    logging.info("welcome admin")
-    return True
+    logging.info('Checking admin...')
+    if request.__user__ is None or not request.__user__.is_admin:
+        logging.warn('Not an admin')
+        raise APIPermissionError('Not an admin')
+    else:
+        logging.info('Admin confirmed')
+        return True
 
 
 def generate_cookie(user, max_age):

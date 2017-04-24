@@ -6,6 +6,9 @@
     <script src="http://lib.sinaapp.com/js/jquery/1.9.1/jquery-1.9.1.min.js"></script>
     <script src="https://cdn.bootcss.com/vue/2.1.10/vue.min.js"></script>
     <script>
+    var
+        ID = '{{ id }}',
+        action = '{{ action }}';
     $(function () {
         if (ID) {
             $.getJSON('/api/get_categery/' + ID, function (data, status) {
@@ -19,9 +22,7 @@
             });
         }
     });
-    var
-        ID = '{{ id }}',
-        action = '{{ action }}';
+
     function initVM(data) {
         var vm = new Vue({
             el: '#vm',
