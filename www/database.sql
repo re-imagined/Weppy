@@ -20,7 +20,7 @@ create table blog (
     `title_en` varchar(50) not null comment 'English title used in url',
     `summary` varchar(200) not null comment 'first few lines of the blog',
     `content` mediumtext not null comment 'content of the blog',
-    `created_at` varchar(50) not null comment 'create time',
+    `created_at` datetime not null comment 'create time',
     `categery_id` varchar(50) not null comment 'id of categery',
     key `idx_created_at` (`created_at`),
     primary key (`id`)

@@ -5,6 +5,7 @@ Encapsulate the SQL to protect the server from injection
 import asyncio
 import logging
 import aiomysql
+import time
 
 logging.basicConfig(level=logging.INFO)
 
@@ -101,6 +102,14 @@ class StringField(Field):
     ):
         super().__init__(name, data_type, primary_key, default)
 
+    def __str__(self):
+        return '<%s, %s:%s>' % (
+            self.__class__, self.column_type, self.name
+            )
+
+    def __repr__(self):
+        return '%s: %s' % (self.name, self.default)
+
 
 class BooleanField(Field):
     def __init__(self, name=None, default=None):
@@ -133,11 +142,41 @@ class FloatField(Field):
     def __init__(self, name=None, primary_key=False, default=0.0):
         super().__init__(name, 'real', primary_key, default)
 
+    def __str__(self):
+        return '<%s, %s:%s>' % (
+            self.__class__, self.column_type, self.name
+            )
+
+    def __repr__(self):
+        return '%s: %s' % (self.name, self.default)
+
 
 class TextField(Field):
 
     def __init__(self, name=None, default=None):
         super().__init__(name, 'text', False, default)
+
+    def __str__(self):
+        return '<%s, %s:%s>' % (
+            self.__class__, self.column_type, self.name
+            )
+
+    __repr__ = __str__
+
+
+class Datetime(Field):
+    """the datetime type is an essentially str of time like '1999-9-9'"""
+    def __inti__(self, name=None, primary_key=False,
+                 default=time.strftime('%Y-%m-%d %H:%M:%S')):
+        super().__init__(name, 'datetime', False, default)
+
+    def __str__(self):
+        return '<%s, %s:%s>' % (
+            self.__class__, self.column_type, self.name
+            )
+
+    def __repr__(self):
+        return '%s: %s' % (self.name, self.default)
 
 
 class ModelMetaClass(type):
@@ -180,7 +219,7 @@ class ModelMetaClass(type):
             primary_key,
             create_args_string(len(escaped_fields) + 1)
         )
-        attrs['__update__'] = 'update `%s` set `%s` where `%s` = ?' % (
+        attrs['__update__'] = 'update `%s` set %s where `%s` = ?' % (
             table_name,
             ', '.join(map(lambda f: '`%s` = ?' % (
                 mappings.get(f).name or f), fields)
@@ -244,7 +283,7 @@ class Model(dict, metaclass=ModelMetaClass):
             sql.append('order_by')
             sql.append(order_by)
         if limit:
-            sql.append['limit']
+            sql.append('limit')
             if isinstance(limit, int):
                 sql.append('?')
                 args.append(limit)
@@ -255,6 +294,7 @@ class Model(dict, metaclass=ModelMetaClass):
                 raise ValueError(
                     'Invalid limit value : %s ' % str(limit)
                 )
+        log(sql, args)
         results = yield from select(' '.join(sql), args)
         return [cls(**r) for r in results]
 
@@ -263,16 +303,21 @@ class Model(dict, metaclass=ModelMetaClass):
     def get_count(cls, select_field, where=None, args=None):
         # select count(*)
         sql = [
-            'select %s __num__ from `%s`' % (select_field, cls.__table_name__)
+            'select count(%s) as __num__ from `%s`' % (
+                select_field, cls.__table_name__
+            )
         ]
+
         if where:
             sql.append('where')
             sql.append(where)
-            size = 1
-            results = yield from select(' '.join(sql), args, size)
-            if len(results) == 0:
-                return None
-            return results[0]['__num__']
+
+        size = 1
+        results = yield from select(' '.join(sql), args, size)
+        if len(results) == 0:
+            return None
+
+        return results[0]['__num__']
 
     @classmethod
     @asyncio.coroutine
@@ -300,7 +345,7 @@ class Model(dict, metaclass=ModelMetaClass):
     def update(self):
         args = list(map(self.getValue, self.__fields__))
         args.append(self.getValue(self.__primary_key__))
-        rows = yield from execute(self.__updata__, args)
+        rows = yield from execute(self.__update__, args)
         if rows != 1:
             logging.warn(
                 'failed to update by primary key: affected rows: %s' % rows
@@ -309,7 +354,7 @@ class Model(dict, metaclass=ModelMetaClass):
     @asyncio.coroutine
     def remove(self):
         args = [self.getValue(self.__primary_key__)]
-        rows = yield from execute(self.__updata__, args)
+        rows = yield from execute(self.__update__, args)
         if rows != 1:
             logging.warn(
                 'failed to remove by primary key: affected rows: %s' % rows

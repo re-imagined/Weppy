@@ -2,12 +2,17 @@
 import re
 import json
 import hashlib
+import logging
 from aiohttp import web
 from config import configs
 from route import post, get
 from models import User, Blog, Categery, next_id
 from api_errors import APIError, APIValueError
-from controller import generate_cookie, COOKIE_NAME
+from controller import (
+    generate_cookie, COOKIE_NAME, Page, get_page_index, check_admin
+)
+
+logging.basicConfig(level=logging.INFO)
 
 _RE_SHA1 = re.compile(r'^[0-9a-f]{40}$')
 
@@ -141,7 +146,50 @@ def api_add_categery(request, *, name):
     return categery
 
 
+@post('/api/edit_categery')
+def api_edit_categery(request, *, id, name):
+    # check_admin(request)
+    if not name or not name.strip():
+        raise APIValueError('name', 'name cannot be empty.')
+    if not id or not id.strip():
+        raise APIValueError('categery_id', 'categery_id cannot be empty.')
+    categery = yield from Categery.find(int(id.strip()))
+    categery.name = name
+    yield from categery.update()
+    return categery
+
+
+@get('/api/get_categery/{categery_id}')
+def api_get_categery(request, *, categery_id):
+    categery = yield from Categery.find(categery_id)
+    return dict(categery=categery)
+
+
+@get('/api/get_all_categeries')
+def api_get_all_categeries(request):
+    check_admin(request)
+    categeries = yield from Categery.find_all()
+    return dict(categeries=categeries)
+
+
 @get('/api/get_blog/{blog_id}')
 def api_get_blog(request, *, blog_id):
     blog = yield from Blog.find(blog_id.strip())
     return blog
+
+
+@get('/api/get_blogs')
+def api_get_blogs(*, page='1'):
+    """
+    get blogs by the given page information
+    """
+
+    page_index = get_page_index(page)
+    num = yield from Blog.get_count('id')
+    page = Page(num, page_index)
+    if num == 0:
+        return dict(page=page, blogs=())
+    blogs = yield from Blog.find_all(
+        orderBy='created_at desc', limit=(page.offset, page.limit)
+    )
+    return dict(page=page, blogs=blogs)

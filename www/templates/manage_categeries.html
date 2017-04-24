@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <script src="http://lib.sinaapp.com/js/jquery/1.9.1/jquery-1.9.1.min.js"></script>
+    <script src="https://cdn.bootcss.com/vue/2.1.10/vue.min.js"></script>
+    <script src="../../static/js/crypto.js"></script>
+    <script type="text/javascript">
+    $(function() {
+        $.getJSON('/api/get_all_categeries',function(data) {
+            initVM(data);
+        });
+    });
+    function initVM(data) {
+        var vm = new Vue({
+            el: '#vm',
+            delimiters: ["<%", "%>"],
+            data: {categeries: data.categeries},
+            methods: {
+                edit_categery: function (categery) {
+                    location.assign('/x/admin/blogs/edit_categery/' + categery.id);
+                },
+                delete_categery: function (categery) {
+                    if (confirm('确认要删除“' + categery.name + '”？删除后不可恢复！')) {
+                        $.post('/x/admin/blogs/delete_categery/', categery.id, function (rtn) {
+                            {
+                                alert(action);
+                                alert('删除成功！');
+                            }
+                        }, 'json');
+                    }
+                }
+            }
+        });
+        $('#vm').show();
+    }
+
+    </script>
+  </head>
+  <body>
+    <table id='vm'>
+        <thead>
+            <tr>
+                <th>id</th>
+                <th>name</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr v-for="categery in categeries">
+                <td><% categery.id %></td>
+                <td><% categery.name %></td>
+                <td>
+                  <a href="#0" v-on:click= "edit_categery(categery)">编辑</a>
+                  <a href="#0" v-on:click= "delete_categery(categery)">删除</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+  </body>
+</html>

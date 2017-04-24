@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <script>
+function initVM(data) {
+        Vue.filter("datetime", function (value) {   //全局方法 Vue.filter() 注册一个自定义过滤器,必须放在Vue实例化前面
+            return new Date(value*1000).toLocaleString();
+        });
+    var vm = new Vue({
+        el: '#vm',
+        delimiters: ['${', '}'],
+        data: {
+            blogs: data.blogs,
+            page: data.page
+        },
+        methods: {
+            edit_blog: function (blog) {
+                location.assign('/x/admin/blogs/edit_blog/' + blog.id);
+            },
+            delete_blog: function (blog) {
+                if (confirm('确认要删除“' + blog.name + '”？删除后不可恢复！')) {
+
+                    $.post(action, blog.id, function (rtn) {
+                        {
+                            alert(action);
+                            alert('删除成功！');
+                            //refresh();
+                        }
+                    }, 'json');
+                }
+            }
+        }
+    });
+    $('#vm').show();
+}
+$(function() {
+
+    $.getJSON('/api/blogs',{page:'{{page_index}}'},function(results) {
+        $('#loading').hide();
+        initVM(results);
+    });
+
+});
+</script>
+  </head>
+  <body>
+        <div id="error" class="">
+        </div>
+
+        <div id="loading" class="">
+            <span> 正在加载...</span>
+        </div>
+
+        <div id="vm" class="">
+            <a href="/x/admin/blogs/add_blog" class="">新日志</a>
+
+            <table class="">
+                <thead>
+                    <tr>
+                        <th class="">标题</th>
+                        <th class="">创建时间</th>
+                        <th class="">操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="blog in blogs" >
+                        <td>
+                            <a target="_blank" v-bind:href="'/blog/'+blog.id" v-text="blog.name+' / '+blog.summary"></a>
+                        </td>
+                        <td>
+                            <span>${blog.created_at | datetime}</span>
+                        </td>
+                        <td>
+                            <a href="#0" v-on:click ="edit_blog(blog)">编辑</a>
+                            <a href="#0" v-on:click="delete_blog(blog)">删除</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <ul class="">
+                <li v-if="page.has_previous"><a :href="'/manage/blogs?page='+(page.page_index - 1) "> << </a></li>
+                <li v-else class=""><span> >> </span></li>
+
+                <li class=""><span v-text="page.page_index"></span></li>
+                <li v-if="page.has_next"><a :href="'/manage/blogs?page='+(page.page_index + 1) "> >> </a></li>
+                <li v-else class="uk-disabled"><span> >> </span></li>
+            </ul>
+        </div>
+  </body>
+</html>

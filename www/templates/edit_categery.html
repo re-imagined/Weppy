@@ -6,22 +6,34 @@
     <script src="http://lib.sinaapp.com/js/jquery/1.9.1/jquery-1.9.1.min.js"></script>
     <script src="https://cdn.bootcss.com/vue/2.1.10/vue.min.js"></script>
     <script>
+    $(function () {
+        if (ID) {
+            $.getJSON('/api/get_categery/' + ID, function (data, status) {
+                initVM(data);
+            });
+        }
+        else {
+            initVM({'categery': {
+                name: '',
+              }
+            });
+        }
+    });
     var
         ID = '{{ id }}',
         action = '{{ action }}';
-        // alert(action);
-    function initVM(categery) {
+    function initVM(data) {
         var vm = new Vue({
             el: '#vm',
-            data: categery,
+            data: {categery: data.categery},
             methods: {
                 submit: function (event) {
                     event.preventDefault();
-                    $.post(action, this.$data, function (r, status,xhr) {
+                    $.post(action, this.$data.categery, function (r, status,xhr) {
                         {
                             alert(status);
                             if(status == 'success'){
-                                return location.assign('/categery/' + r.id);
+                                return location.assign('/x/admin/manage_categeries');
                                 // return location.assign('/x/admin/categeries');
                             }
                         }
@@ -32,39 +44,16 @@
         $('#vm').show();
     }
 
-    $(function () {
-        if (ID) {
-            $.getJSON('/api/get_categery/' + ID, function (categery, status) {
-                $('#loading').hide();
-               // alert(categery);
-                initVM(categery);
-            });
-        }
-        else {
-            $('#loading').hide();
-            initVM({
-                name: ''
-            });
-        }
-    });
     </script>
   </head>
   <body>
-
-   <div id="error" class="">
-   </div>
-
-   <div id="loading" class="">
-       <span>正在加载...</span>
-   </div>
-
    <div id="vm" class="">
        <form v-on:submit="submit" class="">
            <div class=""></div>
            <div class="">
                <label class="">categery name</label>
                <div class="">
-                   <input v-model="name" name="name" type="text" placeholder="标题" class="">
+                   <input v-model="categery.name" name="name" type="text" placeholder="标题" class="">
                </div>
            </div>
            <div class="">

@@ -118,6 +118,7 @@ def auth_factory(app, handler):
         logging.info('check user: %s %s' % (request.method, request.path))
         request.__user__ = None
         cookie_str = request.cookies.get(COOKIE_NAME)
+        logging.info('get cookie: %s' % cookie_str)
         if cookie_str:
             user = yield from get_user_by_cookie(cookie_str)
             if user:
@@ -155,7 +156,7 @@ def init(loop):
         db='weppy'
     )
     app = web.Application(loop=loop, middlewares=[
-        logger_factory, response_factory
+        logger_factory, response_factory, auth_factory
     ])
     init_jinja2(app, filters=dict(datetime=datetime_filter))
     add_routes(app, 'apis')

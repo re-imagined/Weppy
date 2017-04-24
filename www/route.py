@@ -128,7 +128,7 @@ class RequestHandler(object):
                 query_string = request.query_string
                 if query_string:
                     kwargs = dict()
-                    for key, value in parse.parse_query_string(
+                    for key, value in parse.parse_qs(
                             query_string, True).items():
                         kwargs[key] = value[0]
         if kwargs is None:
