@@ -69,6 +69,7 @@ def response_factory(app, handler):
     def response(request):
         logging.info('Response handler....')
         r = yield from handler(request)
+        print(r)
         if isinstance(r, web.StreamResponse):
             return r
         if isinstance(r, bytes):

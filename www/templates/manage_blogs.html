@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <title></title>
-    <script src="http://lib.sinaapp.com/js/jquery/1.9.1/jquery-1.9.1.min.js"></script>
+    <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://cdn.bootcss.com/vue/2.1.10/vue.min.js"></script>
     <script src="../../static/js/crypto.js"></script>
     <script>
@@ -62,7 +62,7 @@ $(function() {
                 <tbody>
                     <tr v-for="blog in blogs" >
                         <td>
-                            <a target="_blank" v-bind:href="'/blog/'+blog.id" v-text="blog.title+' / '+blog.summary"></a>
+                            <a target="_blank" v-bind:href="'/blog/'+blog.title_en" v-text="blog.title+' / '+blog.categery_name"></a>
                         </td>
                         <td>
                             <span>${blog.created_at}</span>
@@ -77,11 +77,11 @@ $(function() {
 
             <ul class="">
                 <li v-if="page.has_previous"><a :href="'/manage/blogs?page='+(page.page_index - 1) "> << </a></li>
-                <li v-else class=""><span> >> </span></li>
+                <li v-else disable><span> << </span></li>
 
                 <li class=""><span v-text="page.page_index"></span></li>
                 <li v-if="page.has_next"><a :href="'/manage/blogs?page='+(page.page_index + 1) "> >> </a></li>
-                <li v-else class="uk-disabled"><span> >> </span></li>
+                <li v-else disable><span> >> </span></li>
             </ul>
         </div>
   </body>

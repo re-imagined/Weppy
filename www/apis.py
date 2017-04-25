@@ -109,7 +109,7 @@ def api_add_blog(
 
 @post('/api/edit_blog')
 def api_edit_blog(
-        request, *, blog_id, title, title_en,
+        request, *, id, title, title_en,
         summary, content, created_at, categery_id
 ):
     if not check_admin(request):
@@ -125,7 +125,7 @@ def api_edit_blog(
     if not created_at or not created_at.strip():
         raise APIValueError('created_at', 'content cannot be empty.')
 
-    blog = yield from Blog.find(blog_id.strip())
+    blog = yield from Blog.find(id.strip())
     blog.title = title.strip()
     blog.summary = summary.strip()
     blog.content = content.strip()
@@ -178,7 +178,11 @@ def api_get_all_categeries(request):
 @get('/api/get_blog/{blog_id}')
 def api_get_blog(request, *, blog_id):
     blog = yield from Blog.find(blog_id.strip())
-    return blog
+    categery = yield from Categery.find(blog.categery_id)
+    blog.categery_name = categery.name
+    time = str(blog.created_at).split()
+    blog.created_at = time[0]
+    return dict(blog=blog)
 
 
 @get('/api/get_blogs')
@@ -198,4 +202,6 @@ def api_get_blogs(request, *, page='1'):
     for blog in blogs:
         time = str(blog.created_at).split()
         blog.created_at = time[0]
+        categery = yield from Categery.find(blog.categery_id)
+        blog.categery_name = categery.name
     return dict(page=page, blogs=blogs)

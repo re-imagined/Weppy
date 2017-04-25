@@ -151,6 +151,11 @@ class RequestHandler(object):
         if self._has_request_args:
             kwargs['request'] = request
         if self._required_kwargs:
+            logging.info(
+                "required_kwargs & kwargs: %s, %s" % (
+                    self._required_kwargs, kwargs.keys()
+                )
+            )
             for name in self._required_kwargs:
                 if name not in kwargs:
                     return web.HTTPBadRequest(
