@@ -6,6 +6,7 @@
     <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://cdn.bootcss.com/vue/2.1.10/vue.min.js"></script>
     <script>
+
     var
         ID = '{{ id }}',
         action = '{{ action }}';
@@ -14,7 +15,7 @@
         var vm = new Vue({
             el: '#vm',
             delimiters: ['${', '}'],
-            data: {blog: blog.blog, categeries: categeries.categeries, selected: 'a'},
+            data: {blog: blog.blog, categeries: categeries.categeries},
             methods: {
                 submit: function (event) {
                     event.preventDefault();
@@ -49,15 +50,20 @@
                     initVM(blog, categeries);
                 }
             });
-        }
-        else {
-            initVM({
-                title: '',
-                title_en: '',
-                summary: '',
-                content: '',
-                created_at: '',
-                categery_id: ''
+        } else {
+            var categeries;
+            $.getJSON('/api/get_all_categeries', function (data) {
+                categeries = data;
+                initVM({
+                    blog: {
+                        title: '',
+                        title_en: '',
+                        summary: '',
+                        content: '',
+                        created_at: '',
+                        categery_id: ''
+                    }
+                }, categeries);
             });
         }
     });
@@ -108,7 +114,6 @@
                <select v-model="blog.categery_id">
                    <option v-for="categery in categeries" v-bind:value="categery.id">${ categery.name }</option>
                </select>
-               ${ blog.categery_id }
            </div>
            <div class="">
                <button type="submit" class="">保存</button>

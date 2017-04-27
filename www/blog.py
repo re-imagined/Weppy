@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
-import markdown2
+import markdown
 from route import get
 from models import User, Blog, Categery
-from controller import get_page_index, check_admin
+from controller import get_page_index, check_admin, markdown
+from markdown.extensions.toc import TocExtension
 
 
 @get('/blogs')
@@ -10,13 +11,6 @@ def index(request):
     users = yield from User.find_all('is_admin=?', True)
     blogs = yield from Blog.find_all()
     return dict(__template__='blogs.html', users=users, blogs=blogs)
-
-
-# @get('/blog/{blog_id}')
-# def get_blog(blog_id):
-#     blog = yield from Blog.find(id)
-#     blog.marked_content = markdown2.markdown(blog.content)
-#     return dict(__template__=blog.html, blog=blog)
 
 
 @get('/x/admin/blogs/add_blog')
@@ -76,8 +70,13 @@ def edit_blog(request, *, blog_id):
 def get_blog_by_title_en(request, *, title_en):
     blog = yield from Blog.find_all("title_en=?", (title_en,))
     blog = blog[0]
-    blog.marked_content = markdown2.markdown(blog.content)
-    del blog.content
+    # blog.marked_content = markdown(blog.content)
+    blog.marked_content = markdown.markdown(
+        blog.content,
+        extensions=['markdown.extensions.extra', 'mdx_math', TocExtension(baselevel=3)]
+        )
+    # blog.marked_content = markdown('```python\nassert 1 == 1\n```')
+    del blog['content']
     return dict(
         __template__='blog_show.html',
         id=blog.id,

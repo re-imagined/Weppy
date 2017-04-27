@@ -10,6 +10,12 @@ from aiohttp import web
 from models import User
 from config import configs
 from api_errors import APIPermissionError
+import markdown
+import mistune
+from pygments import highlight
+from pygments.lexers import get_lexer_by_name
+from pygments.formatters import HtmlFormatter
+
 
 logging.basicConfig(level=logging.INFO)
 
@@ -141,3 +147,17 @@ def get_page_index(page_str):
     if page < 1:
         page = 1
     return page
+
+
+class HighlightRenderer(mistune.Renderer):
+    def block_code(self, code, lang):
+        if not lang:
+            return '\n<pre><code>%s</code></pre>\n' % \
+                mistune.escape(code)
+        lexer = get_lexer_by_name(lang, stripall=True)
+        formatter = HtmlFormatter()
+        return highlight(code, lexer, formatter)
+
+renderer = HighlightRenderer()
+# markdown = mistune.Markdown(escape=True, hard_wrap=True)
+# markdown = markdown.markdown()
