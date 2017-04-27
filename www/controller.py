@@ -23,6 +23,20 @@ _COOKIE_KEY = configs['session']['secret']
 COOKIE_NAME = configs['cookie_name']
 
 
+@get('/base')
+def base():
+    return {
+        '__template__': 'base.html'
+    }
+
+
+@get('/timepickertest')
+def timepickertest():
+    return {
+        '__template__': 'timepickertest.html'
+    }
+
+
 @get('/sign_up')
 def sign_up():
     return {

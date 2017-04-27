@@ -80,7 +80,7 @@ def api_add_blog(
         request, *, title, title_en, summary, content, created_at, categery_id
 ):
     if not check_admin(request):
-        return 'redirect:/login'
+        return dict(message='no permition')
     if not title or not title.strip():
         raise APIValueError('title', 'title cannot be empty.')
     if not title_en or not title_en.strip():
@@ -113,7 +113,7 @@ def api_edit_blog(
         summary, content, created_at, categery_id
 ):
     if not check_admin(request):
-        return 'redirect:/login'
+        return dict(message='no permition')
     if not title or not title.strip():
         raise APIValueError('title', 'title cannot be empty.')
     if not title_en or not title_en.strip():
@@ -141,7 +141,7 @@ def api_edit_blog(
 @post('/api/add_categery')
 def api_add_categery(request, *, name):
     if not check_admin(request):
-        return 'redirect:/login'
+        return dict(message='no permition')
     if not name or not name.strip():
         raise APIValueError('name', 'name cannot be empty.')
     categery = Categery(name=name.strip())
@@ -152,7 +152,7 @@ def api_add_categery(request, *, name):
 @post('/api/edit_categery')
 def api_edit_categery(request, *, id, name):
     if not check_admin(request):
-        return 'redirect:/login'
+        return dict(message='no permition')
     if not name or not name.strip():
         raise APIValueError('name', 'name cannot be empty.')
     if not id or not id.strip():

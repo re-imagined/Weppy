@@ -1,0 +1,29 @@
+html, body, #editor {
+  margin: 0 !important;
+  height: 100% !important;
+  font-family: 'Helvetica Neue', Arial, sans-serif !important;
+  color: #333 !important;
+}
+textarea, #editor div {
+  display: inline-block !important;
+  width: 49% !important;
+  /*height: 100% !important;*/
+  /*overflow-y: visible !important;*/
+  vertical-align: top !important;
+  box-sizing: border-box !important;
+  padding: 0 20px !important;
+}
+textarea {
+  border: none !important;
+  border-right: 1px solid #ccc !important;
+  resize: both !important;
+  outline: none !important;
+  /*overflow-y: visible !important;*/
+  background-color: #f6f6f6 !important;
+  font-size: 14px !important;
+  font-family: 'Monaco', courier, monospace !important;
+  padding: 20px !important;
+}
+code {
+  color: #f66 !important;
+}

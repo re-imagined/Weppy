@@ -3,6 +3,8 @@
   <head>
     <meta charset="utf-8">
     <title></title>
+    <link href="//cdn.muicss.com/mui-0.9.16/css/mui.min.css" rel="stylesheet" type="text/css" />
+    <script src="//cdn.muicss.com/mui-0.9.16/js/mui.min.js"></script>
     <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://cdn.bootcss.com/vue/2.1.10/vue.min.js"></script>
     <script src="../../static/js/crypto.js"></script>
@@ -49,9 +51,7 @@ $(function() {
   </head>
   <body>
         <div id="vm" class="">
-            <a href="/x/admin/blogs/add_blog" class="">新日志</a>
-
-            <table class="">
+            <table class="mui-table">
                 <thead>
                     <tr>
                         <th class="">标题</th>
@@ -74,7 +74,7 @@ $(function() {
                     </tr>
                 </tbody>
             </table>
-
+            <a href="/x/admin/blogs/add_blog" class="mui-btn mui-btn--fab mui-btn--primary">新日志</a>
             <ul class="">
                 <li v-if="page.has_previous"><a :href="'/manage/blogs?page='+(page.page_index - 1) "> << </a></li>
                 <li v-else disable><span> << </span></li>

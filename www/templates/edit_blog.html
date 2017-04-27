@@ -5,7 +5,18 @@
     <title></title>
     <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://cdn.bootcss.com/vue/2.1.10/vue.min.js"></script>
+    <link href="//cdn.muicss.com/mui-0.9.16/css/mui.min.css" rel="stylesheet" type="text/css" />
+    <script src="//cdn.muicss.com/mui-0.9.16/js/mui.min.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/0.10.0/lodash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.3.2/marked.min.js"></script>
+    <link rel="stylesheet" href="/static/css/mdeditor.css"/>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script>
+    $( function() {
+      $( "#datepicker" ).datepicker();
+    } );
 
     var
         ID = '{{ id }}',
@@ -15,8 +26,16 @@
         var vm = new Vue({
             el: '#vm',
             delimiters: ['${', '}'],
-            data: {blog: blog.blog, categeries: categeries.categeries},
+            data: {blog: blog.blog, categeries: categeries.categeries, input: blog.blog.content},
+            computed: {
+                compiledMarkdown: function () {
+                return marked(this.input, { sanitize: true })
+              }
+            },
             methods: {
+                update: _.debounce(function (e) {
+                  this.input = e.target.value
+                }, 300),
                 submit: function (event) {
                     event.preventDefault();
                     $.post(action, this.$data.blog, function (r, status,xhr) {
@@ -31,10 +50,8 @@
                 }
             }
         });
-        console.log(vm)
         $('#vm').show();
     }
-
     $(function () {
         if (ID) {
             var blog, categeries;
@@ -67,13 +84,14 @@
             });
         }
     });
+$("textarea").scroll(function(){ $(this).css("height",$(this)[0].scrollHeight); });
     </script>
+
   </head>
   <body>
 
    <div id="vm" class="">
-       <form v-on:submit="submit" class="">
-           <div class=""></div>
+       <form v-on:submit="submit" class="mui-form">
            <div class="">
                <div class="">
                    <input value='{{ id }}' name="blog_id" type="hidden"/>
@@ -81,45 +99,45 @@
            </div>
            <div class="">
                <label class="">标题:</label>
-               <div class="">
-                   <input v-model="blog.title" name="title" type="text" placeholder="标题" class=""/>
+               <div class="mui-textfield">
+                   <input v-model="blog.title" name="title" type="text" placeholder="标题" class="" required/>
                </div>
            </div>
            <div class="">
                <label class="">英文标题:</label>
-               <div class="">
-                   <input v-model="blog.title_en" rows="4" name="title_en" placeholder="英文标题" class=""/>
+               <div class="mui-textfield">
+                   <input v-model="blog.title_en" rows="4" name="title_en" placeholder="英文标题" class="" required/>
                </div>
            </div>
            <div class="">
                <label class="">摘要:</label>
-               <div class="">
+               <div class="mui-textfield">
                    <textarea v-model="blog.summary" rows="4" name="summary" placeholder="摘要" class=""></textarea>
                </div>
            </div>
-           <div class="">
-               <label class="">内容:</label>
-               <div class="">
-                   <textarea v-model="blog.content" rows="16" name="content" placeholder="内容" class=""></textarea>
-               </div>
+           <div>
+              <label class="">内容:</label>
+              <div  id="editor" class="">
+                  <textarea :value="input" @input="update" v-model="blog.content" required></textarea>
+                  <div v-html="compiledMarkdown"></div>
+              </div>
            </div>
            <div class="">
                <label class="">创建时间:</label>
                <div class="">
-                   <input v-model="blog.created_at" rows="16" name="created_at" placeholder="创建时间" class=""/>
+                   <input v-model="blog.created_at" type="text" id="datepicker" name="created_at" required/>
                </div>
            </div>
-           <div class="">
+           <div class="mui-select">
                <label class="">分类:</label>
-               <select v-model="blog.categery_id">
+               <select class="" v-model="blog.categery_id">
                    <option v-for="categery in categeries" v-bind:value="categery.id">${ categery.name }</option>
                </select>
            </div>
            <div class="">
-               <button type="submit" class="">保存</button>
+               <button type="submit" class="mui-btn mui-btn--primary">Submit</button>
            </div>
        </form>
    </div>
-
   </body>
 </html>

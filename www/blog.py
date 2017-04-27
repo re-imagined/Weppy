@@ -73,8 +73,13 @@ def get_blog_by_title_en(request, *, title_en):
     # blog.marked_content = markdown(blog.content)
     blog.marked_content = markdown.markdown(
         blog.content,
-        extensions=['markdown.extensions.extra', 'mdx_math', TocExtension(baselevel=3)]
-        )
+        extensions=[
+            'markdown.extensions.extra',
+            'mdx_math',
+            'markdown.extensions.codehilite',
+            TocExtension(baselevel=3)
+        ]
+    )
     # blog.marked_content = markdown('```python\nassert 1 == 1\n```')
     del blog['content']
     return dict(
