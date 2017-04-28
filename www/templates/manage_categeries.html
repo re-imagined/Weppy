@@ -3,9 +3,11 @@
   <head>
     <meta charset="utf-8">
     <title></title>
+    <link href="//cdn.muicss.com/mui-0.9.16/css/mui.min.css" rel="stylesheet" type="text/css" />
     <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://cdn.bootcss.com/vue/2.1.10/vue.min.js"></script>
-    <script src="../../static/js/crypto.js"></script>
+    <script src="//cdn.muicss.com/mui-0.9.16/js/mui.min.js"></script>
+    <script src="/static/js/crypto.js"></script>
     <script type="text/javascript">
     $(function() {
         $.getJSON('/api/get_all_categeries',function(data) {
@@ -39,7 +41,7 @@
     </script>
   </head>
   <body>
-    <table id='vm'>
+    <table id='vm' class="mui-table mui-table--bordered">
         <thead>
             <tr>
                 <th>id</th>

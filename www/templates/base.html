@@ -2,22 +2,34 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    {% block meta %}{% endblock %}
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}{% endblock %}</title>
     <link href="//cdn.muicss.com/mui-latest/css/mui.min.css" rel="stylesheet" type="text/css" />
     <link href="/static/css/style.css" rel="stylesheet" type="text/css" />
     <script src="//cdn.muicss.com/mui-latest/js/mui.min.js"></script>
     <script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
     <script src="/static/js/script.js"></script>
+    <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/vue/2.1.10/vue.min.js"></script>
+    <script src="/static/js/crypto.js"></script>
+    <link rel="stylesheet" href="/static/css/mdeditor.css"/>
+    <script src="/static/js/crypto.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/0.10.0/lodash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.3.2/marked.min.js"></script>
+    <script type="text/javascript" src="/static/js/vue-datetimepicker.js" charset="UTF-8"></script> -->
+
+    {% block beforehead %}{% endblock %}
   </head>
   <body>
     <div id="sidedrawer" class="mui--no-user-select">
       <div id="sidedrawer-brand" class="mui--appbar-line-height">
-        <span class="mui--text-title">Brand.io</span>
+        <span class="mui--text-title">Admin</span>
       </div>
       <div class="mui-divider"></div>
       <ul>
-        <li>
+        {% block sidebarli %}{% endblock %}
+        <!-- <li>
           <strong>Category 1</strong>
           <ul>
             <li><a href="#">Item 1</a></li>
@@ -40,7 +52,7 @@
             <li><a href="#">Item 2</a></li>
             <li><a href="#">Item 3</a></li>
           </ul>
-        </li>
+        </li> -->
       </ul>
     </div>
     <header id="header">
@@ -55,18 +67,15 @@
     <div id="content-wrapper">
       <div class="mui--appbar-height"></div>
       <div class="mui-container-fluid">
-        <br>
-        <h1>Brand.io</h1>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris sollicitudin volutpat molestie. Nullam id tempor nulla. Aenean sit amet urna et elit pharetra consequat. Aliquam fringilla tortor vitae lectus tempor, tempor bibendum nunc elementum. Etiam ultrices tristique diam, vitae sodales metus bibendum id. Suspendisse blandit ligula eu fringilla pretium. Mauris dictum gravida tortor eu lacinia. Donec purus purus, ornare sit amet consectetur sed, dictum sit amet ex. Vivamus sit amet imperdiet tellus. Quisque ultrices risus a massa laoreet, vitae tempus sem congue. Maecenas nec eros ut lectus vehicula rutrum. Donec consequat tincidunt arcu non faucibus. Duis elementum, ante venenatis lacinia cursus, turpis massa congue magna, sed dapibus felis nibh sed tellus. Nam consectetur non nibh vitae sodales. Pellentesque malesuada dolor nec mi volutpat, eget vehicula eros ultrices.</p>
-        <p>Aenean vehicula tortor a tellus porttitor, id elementum est tincidunt. Etiam varius odio tortor. Praesent vel pulvinar sapien. Praesent ac sodales sem. Phasellus id ultrices massa. Sed id erat sit amet magna accumsan vulputate eu at quam. Etiam feugiat semper imperdiet. Sed a sem vitae massa condimentum vestibulum. In vehicula, quam vel aliquet aliquam, enim elit placerat libero, at pretium nisi lorem in ex. Vestibulum lorem augue, semper a efficitur in, dictum vitae libero. Donec velit est, sollicitudin a volutpat quis, iaculis sit amet metus. Nulla at ante nec dolor euismod mattis cursus eu nisl.</p>
-        <p>Quisque interdum facilisis consectetur. Nam eu purus purus. Curabitur in ligula quam. Nam euismod ligula eu tellus pellentesque laoreet. Aliquam erat volutpat. Curabitur eu bibendum velit. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nunc efficitur lorem sit amet quam porta pharetra. Cras ultricies pellentesque eros sit amet semper.</p>
+        {% block content %}
+        {% endblock %}
       </div>
     </div>
-    <footer id="footer">
+    <!-- <footer id="footer">
       <div class="mui-container-fluid">
         <br>
-        Made with ♥ by <a href="https://www.muicss.com">MUI</a>
+        Powed by Weppy
       </div>
-    </footer>
+    </footer> -->
   </body>
 </html>

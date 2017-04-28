@@ -1,13 +1,6 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <title></title>
-    <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
-    <script src="https://cdn.bootcss.com/vue/2.1.10/vue.min.js"></script>
-    <script src="../../static/js/crypto.js"></script>
-    <script xmlns:v-on="http://www.w3.org/1999/xhtml">
-
+{% extends 'base.html' %}
+{% block beforehead %}
+<script>
 $(function () {
     var vm = new Vue({
         el: '#vm',
@@ -51,34 +44,34 @@ $(function () {
     });
     $('#vm').show();
 });
-
 </script>
-  </head>
-  <body>
+{% endblock %}
 
-
-<div class="">
+{% block sidebarli %}
+<li>
+  <ul>
+    <li><a class="mui-btn mui-btn--raised" href="/x/admin/manage_blogs">博客管理</a></li>
+    <li><a class="mui-btn mui-btn--raised" href="/x/admin/manage_categeries">分类管理</a></li>
+    <li><a class="mui-btn mui-btn--raised" href="#">标签管理</a></li>
+  </ul>
+</li>
+{% endblock %}
+{% block content %}
     <div class="">
         <form id="vm" v-on:submit="submit" class="">
-            <div class=""></div>
-            <div class="">
-                <div class="">
-                    <input v-model="name" name="name" type="text" placeholder="用户名" maxlength="50" class="">
-                </div>
+            <br/><br/>
+            <div class="mui-textfield mui-textfield--float-label">
+                <input v-model="name" name="name" type="text" class="" required>
+                <label>用户名</label>
+            </div>
+            <br/>
+            <div class="mui-textfield mui-textfield--float-label">
+                <input v-model="password" name="password" type="password" class="" required>
+                <label>密码</label>
             </div>
             <div class="">
-                <div class="">
-                    <i class=""></i>
-                    <input v-model="password" name="password" type="password" placeholder="口令" maxlength="50"
-                           class="">
-                </div>
-            </div>
-            <div class="">
-                <button type="submit" class="">登录
-                </button>
+                <button type="submit" class="mui-btn mui-btn--raised">Login</button>
             </div>
         </form>
     </div>
-</div>
-  </body>
-</html>
+{% endblock %}

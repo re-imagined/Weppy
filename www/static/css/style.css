@@ -6,6 +6,7 @@ html,
 body {
   height: 100%;
   background-color: #eee;
+  overflow:scroll;
 }
 
 html,
@@ -49,7 +50,7 @@ buttons {
   overflow-x: hidden;
   margin-left: 0px;
   transition: margin-left 0.2s;
-  
+
   /* sticky bottom */
   box-sizing: border-box;
   margin-bottom: -160px;
@@ -67,31 +68,31 @@ buttons {
   #header {
     left: 200px;
   }
-  
+
   #sidedrawer {
     transform: translate(200px);
   }
-  
+
   #content-wrapper {
     margin-left: 200px;
   }
-  
+
   #footer {
     margin-left: 200px;
   }
-  
+
   body.hide-sidedrawer #header {
     left: 0;
   }
-  
+
   body.hide-sidedrawer #sidedrawer {
     transform: translate(0px);
   }
-  
+
   body.hide-sidedrawer #content-wrapper {
     margin-left: 0;
   }
-  
+
   body.hide-sidedrawer #footer {
     margin-left: 0;
   }

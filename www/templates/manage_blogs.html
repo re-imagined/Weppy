@@ -7,7 +7,7 @@
     <script src="//cdn.muicss.com/mui-0.9.16/js/mui.min.js"></script>
     <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://cdn.bootcss.com/vue/2.1.10/vue.min.js"></script>
-    <script src="../../static/js/crypto.js"></script>
+    <script src="/static/js/crypto.js"></script>
     <script>
 function initVM(data) {
         Vue.filter("datetime", function (value) {   //全局方法 Vue.filter() 注册一个自定义过滤器,必须放在Vue实例化前面
@@ -51,7 +51,7 @@ $(function() {
   </head>
   <body>
         <div id="vm" class="">
-            <table class="mui-table">
+            <table class="mui-table mui-table--bordered">
                 <thead>
                     <tr>
                         <th class="">标题</th>
@@ -68,13 +68,13 @@ $(function() {
                             <span>${blog.created_at}</span>
                         </td>
                         <td>
-                            <a href="#0" v-on:click ="edit_blog(blog)">编辑</a>
-                            <a href="#0" v-on:click="delete_blog(blog)">删除</a>
+                            <a class="mui-btn mui-btn--flat mui-btn--primary" href="#0" v-on:click ="edit_blog(blog)">编辑</a>
+                            <a class="mui-btn mui-btn--flat mui-btn--danger" href="#0" v-on:click="delete_blog(blog)">删除</a>
                         </td>
                     </tr>
                 </tbody>
             </table>
-            <a href="/x/admin/blogs/add_blog" class="mui-btn mui-btn--fab mui-btn--primary">新日志</a>
+            &nbsp;&nbsp;&nbsp;<a href="/x/admin/blogs/add_blog" class="mui-btn mui-btn--fab mui-btn--primary">+</a>
             <ul class="">
                 <li v-if="page.has_previous"><a :href="'/manage/blogs?page='+(page.page_index - 1) "> << </a></li>
                 <li v-else disable><span> << </span></li>

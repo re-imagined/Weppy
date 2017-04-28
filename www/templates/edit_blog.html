@@ -1,32 +1,29 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html>
   <head>
     <meta charset="utf-8">
     <title></title>
+    <link href="//cdn.muicss.com/mui-0.9.16/css/mui.min.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="/static/css/mdeditor.css"/>
+
     <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://cdn.bootcss.com/vue/2.1.10/vue.min.js"></script>
-    <link href="//cdn.muicss.com/mui-0.9.16/css/mui.min.css" rel="stylesheet" type="text/css" />
     <script src="//cdn.muicss.com/mui-0.9.16/js/mui.min.js"></script>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/0.10.0/lodash.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.3.2/marked.min.js"></script>
-    <link rel="stylesheet" href="/static/css/mdeditor.css"/>
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script type="text/javascript" src="/static/js/vue-datetimepicker.js" charset="UTF-8"></script> -->
+{% extends 'base.html' %}
+{% block beforehead %}
     <script>
-    $( function() {
-      $( "#datepicker" ).datepicker();
-    } );
-
     var
         ID = '{{ id }}',
         action = '{{ action }}';
-        // alert(action);
     function initVM(blog, categeries) {
         var vm = new Vue({
             el: '#vm',
             delimiters: ['${', '}'],
             data: {blog: blog.blog, categeries: categeries.categeries, input: blog.blog.content},
+            components: { datepicker },
             computed: {
                 compiledMarkdown: function () {
                 return marked(this.input, { sanitize: true })
@@ -86,58 +83,73 @@
     });
 $("textarea").scroll(function(){ $(this).css("height",$(this)[0].scrollHeight); });
     </script>
+{% endblock %}
 
-  </head>
-  <body>
+{% block sidebarli %}
+<li>
+  <ul>
+    <li><a class="mui-btn mui-btn--raised" href="/x/admin/manage_blogs">博客管理</a></li>
+    <li><a class="mui-btn mui-btn--raised" href="/x/admin/manage_categeries">分类管理</a></li>
+    <li><a class="mui-btn mui-btn--raised" href="#">标签管理</a></li>
+  </ul>
+</li>
+{% endblock %}
 
-   <div id="vm" class="">
+{% block content %}
+
+       <div id="vm" class="">
        <form v-on:submit="submit" class="mui-form">
            <div class="">
                <div class="">
                    <input value='{{ id }}' name="blog_id" type="hidden"/>
                </div>
            </div>
+           <br/>
            <div class="">
-               <label class="">标题:</label>
+               <label class="">&nbsp;创建时间:</label>
+               <div class="">
+                   <input v-model="blog.created_at" type="hidden" id="datepicker" name="created_at" required/>
+                   <datepicker v-model="blog.created_at"></datepicker>
+               </div>
+
+           </div>
+           <br/>
+           <div class="">
+               <label class="">&nbsp;标题:</label>
                <div class="mui-textfield">
-                   <input v-model="blog.title" name="title" type="text" placeholder="标题" class="" required/>
+                   <input v-model="blog.title" name="title"  placeholder="标题" class="" required onkeydown="if(event.keyCode==32||event.keyCode==188||event.keyCode==222){return false;}"/>
                </div>
            </div>
            <div class="">
-               <label class="">英文标题:</label>
+               <label class="">&nbsp;英文标题(URL用):</label>
                <div class="mui-textfield">
-                   <input v-model="blog.title_en" rows="4" name="title_en" placeholder="英文标题" class="" required/>
+                   <input v-model="blog.title_en" rows="4" name="title_en" placeholder="英文标题" class="" required onkeydown="if(event.keyCode==32||event.keyCode==188||event.keyCode==222){return false;}"/>
                </div>
            </div>
            <div class="">
-               <label class="">摘要:</label>
+               <label class="">&nbsp;摘要(首页展示用):</label>
                <div class="mui-textfield">
                    <textarea v-model="blog.summary" rows="4" name="summary" placeholder="摘要" class=""></textarea>
                </div>
            </div>
            <div>
-              <label class="">内容:</label>
+              <label class="">&nbsp;内容(Markdonw):</label>
               <div  id="editor" class="">
                   <textarea :value="input" @input="update" v-model="blog.content" required></textarea>
                   <div v-html="compiledMarkdown"></div>
               </div>
            </div>
-           <div class="">
-               <label class="">创建时间:</label>
-               <div class="">
-                   <input v-model="blog.created_at" type="text" id="datepicker" name="created_at" required/>
-               </div>
-           </div>
+           <br/>
            <div class="mui-select">
-               <label class="">分类:</label>
+               <label class="">&nbsp;分类:</label>
                <select class="" v-model="blog.categery_id">
                    <option v-for="categery in categeries" v-bind:value="categery.id">${ categery.name }</option>
                </select>
            </div>
            <div class="">
-               <button type="submit" class="mui-btn mui-btn--primary">Submit</button>
+               <button type="submit" class="mui-btn mui-btn--raised mui-btn--primary">Submit</button>
+               <a href="/x/admin/manage_blogs" class="mui-btn mui-btn--raised">Cancel</a>
            </div>
        </form>
    </div>
-  </body>
-</html>
+{% endblock %}
