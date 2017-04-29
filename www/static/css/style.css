@@ -173,3 +173,11 @@ buttons {
   color: #fff;
   text-decoration: underline;
 }
+
+div.pagenation ul {
+  list-style-type: none;
+}
+
+div.pagenation li { 
+  display:inline;
+}

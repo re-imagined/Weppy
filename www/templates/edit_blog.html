@@ -38,8 +38,9 @@
                     $.post(action, this.$data.blog, function (r, status,xhr) {
                         {
                             alert(status);
+                            console.log(r);
                             if(status == 'success'){
-                                // return location.assign('/blog/' + r.id);
+                                // return location.assign('/x/admin/blogs/edit_blog/' + r.id);
                                 // return location.assign('/x/admin/blogs');
                             }
                         }

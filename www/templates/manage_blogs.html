@@ -1,16 +1,11 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <title></title>
-    <link href="//cdn.muicss.com/mui-0.9.16/css/mui.min.css" rel="stylesheet" type="text/css" />
-    <script src="//cdn.muicss.com/mui-0.9.16/js/mui.min.js"></script>
-    <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
-    <script src="https://cdn.bootcss.com/vue/2.1.10/vue.min.js"></script>
-    <script src="/static/js/crypto.js"></script>
+{% extends 'base.html' %}
+{% block title %}
+Manage Blogs
+{% endblock %}
+{% block beforehead %}
     <script>
 function initVM(data) {
-        Vue.filter("datetime", function (value) {   //全局方法 Vue.filter() 注册一个自定义过滤器,必须放在Vue实例化前面
+        Vue.filter("datetime", function (value) {
             return new Date(value*1000).toLocaleString();
         });
     var vm = new Vue({
@@ -38,25 +33,36 @@ function initVM(data) {
             }
         }
     });
+    console.log(vm);
     $('#vm').show();
 }
 $(function() {
 
-    $.getJSON('/api/get_blogs',{page:'{{page_index}}'},function(results) {
+    $.getJSON('/api/get_blogs',{page:'{{page.page_index}}'},function(results) {
         initVM(results);
     });
 
 });
 </script>
-  </head>
-  <body>
+{% endblock %}
+{% block sidebarli %}
+<li>
+  <ul>
+    <li><a class="mui-btn mui-btn--raised" href="/x/admin/manage_blogs">博客管理</a></li>
+    <li><a class="mui-btn mui-btn--raised" href="/x/admin/manage_categeries">分类管理</a></li>
+    <li><a class="mui-btn mui-btn--raised" href="#">标签管理</a></li>
+  </ul>
+</li>
+{% endblock %}
+{% block content %}
+
         <div id="vm" class="">
             <table class="mui-table mui-table--bordered">
                 <thead>
                     <tr>
-                        <th class="">标题</th>
+                        <th class="">标题&nbsp;/&nbsp;分类</th>
                         <th class="">创建时间</th>
-                        <th class="">操作</th>
+                        <th class="">&nbsp;&nbsp;操作</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -75,14 +81,23 @@ $(function() {
                 </tbody>
             </table>
             &nbsp;&nbsp;&nbsp;<a href="/x/admin/blogs/add_blog" class="mui-btn mui-btn--fab mui-btn--primary">+</a>
-            <ul class="">
-                <li v-if="page.has_previous"><a :href="'/manage/blogs?page='+(page.page_index - 1) "> << </a></li>
-                <li v-else disable><span> << </span></li>
-
-                <li class=""><span v-text="page.page_index"></span></li>
-                <li v-if="page.has_next"><a :href="'/manage/blogs?page='+(page.page_index + 1) "> >> </a></li>
-                <li v-else disable><span> >> </span></li>
-            </ul>
+            <div class="mui-container-fluid">
+                <div class="pagenation">
+                    <ul class="">
+                        <li v-if="page.has_previous"><a :href="'/x/admin/manage_blogs?page='+(page.page_index - 1)" class="mui-btn mui-btn--raised"> << </a></li>
+                        <li v-else><button class="mui-btn mui-btn--raised" disable> << </button></li>
+                        <li v-for="p in page.page_count">
+                            <a :href="'/x/admin/manage_blogs?page='+(p)" v-if="p==page.page_index" class="mui-btn mui-btn--raised mui-btn--primary" >
+                                <span v-text="p"></span>
+                            </a>
+                            <a :href="'/x/admin/manage_blogs?page='+(p)" v-else class="mui-btn mui-btn--raised">
+                                <span v-text="p"></span>
+                            </a>
+                        </li>
+                        <li v-if="page.has_next"><a :href="'/x/admin/manage_blogs?page='+(page.page_index + 1)" class="mui-btn mui-btn--raised"> >> </a></li>
+                        <li v-else ><button class="mui-btn mui-btn--raised" disable> >> </button></li>
+                    </ul>
+                </div>
+            </div>
         </div>
-  </body>
-</html>
+{% endblock %}

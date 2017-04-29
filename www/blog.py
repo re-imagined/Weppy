@@ -2,7 +2,7 @@
 import markdown
 from route import get
 from models import User, Blog, Categery
-from controller import get_page_index, check_admin, markdown
+from controller import get_page_index, check_admin, Page
 from markdown.extensions.toc import TocExtension
 
 
@@ -94,9 +94,15 @@ def manage_blogs(request, *, page='1'):
     if not check_admin(request):
         return 'redirect:/login'
     else:
+        page_index = get_page_index(page)
+        num = yield from Blog.get_count('id')
+        page = Page(num, page_index)
+        if num == 0:
+            return dict(page=page, blogs=())
+        print(page)
         return dict(
             __template__='manage_blogs.html',
-            page_index=get_page_index(page)
+            page=page
         )
 
 

@@ -190,18 +190,20 @@ def api_get_blogs(request, *, page='1'):
     """
     get blogs by the given page information
     """
-
     page_index = get_page_index(page)
     num = yield from Blog.get_count('id')
     page = Page(num, page_index)
     if num == 0:
         return dict(page=page, blogs=())
     blogs = yield from Blog.find_all(
-        orderBy='created_at desc', limit=(page.offset, page.limit)
+        orderBy='id desc', limit=(page.offset, page.limit)
     )
     for blog in blogs:
         time = str(blog.created_at).split()
         blog.created_at = time[0]
         categery = yield from Categery.find(blog.categery_id)
         blog.categery_name = categery.name
-    return dict(page=page, blogs=blogs)
+    return dict(
+        page=page,
+        blogs=blogs
+    )
