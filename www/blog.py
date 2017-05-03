@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
-import markdown
+
 from route import get
 from models import User, Blog, Categery
-from controller import get_page_index, check_admin, Page
-from markdown.extensions.toc import TocExtension
+from controller import get_page_index, check_admin, Page, mark
 
 
 @get('/blogs')
@@ -71,16 +70,9 @@ def get_blog_by_title_en(request, *, title_en):
     blog = yield from Blog.find_all("title_en=?", (title_en,))
     blog = blog[0]
     # blog.marked_content = markdown(blog.content)
-    blog.marked_content = markdown.markdown(
+    blog.marked_content = mark(
         blog.content,
-        extensions=[
-            'markdown.extensions.extra',
-            'mdx_math',
-            'markdown.extensions.codehilite',
-            TocExtension(baselevel=3)
-        ]
     )
-    # blog.marked_content = markdown('```python\nassert 1 == 1\n```')
     del blog['content']
     return dict(
         __template__='blog_show.html',

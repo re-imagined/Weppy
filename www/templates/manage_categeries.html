@@ -1,13 +1,8 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <title></title>
-    <link href="//cdn.muicss.com/mui-0.9.16/css/mui.min.css" rel="stylesheet" type="text/css" />
-    <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
-    <script src="https://cdn.bootcss.com/vue/2.1.10/vue.min.js"></script>
-    <script src="//cdn.muicss.com/mui-0.9.16/js/mui.min.js"></script>
-    <script src="/static/js/crypto.js"></script>
+{% extends 'base.html' %}
+{% block title %}
+Manage Categeries
+{% endblock %}
+{% block beforehead %}
     <script type="text/javascript">
     $(function() {
         $.getJSON('/api/get_all_categeries',function(data) {
@@ -39,8 +34,11 @@
     }
 
     </script>
-  </head>
-  <body>
+{% endblock %}
+{% block sidebarli %}
+{% include 'sidebar.html' %}
+{% endblock %}
+{% block content %}
     <table id='vm' class="mui-table mui-table--bordered">
         <thead>
             <tr>
@@ -54,11 +52,10 @@
                 <td><% categery.id %></td>
                 <td><% categery.name %></td>
                 <td>
-                  <a href="#0" v-on:click= "edit_categery(categery)">编辑</a>
-                  <a href="#0" v-on:click= "delete_categery(categery)">删除</a>
+                  <a class="mui-btn mui-btn--flat mui-btn--primary" href="#0" v-on:click= "edit_categery(categery)">编辑</a>
+                  <a class="mui-btn mui-btn--flat mui-btn--danger" href="#0" v-on:click= "delete_categery(categery)">删除</a>
                 </td>
             </tr>
         </tbody>
     </table>
-  </body>
-</html>
+{% endblock %}

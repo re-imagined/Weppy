@@ -5,11 +5,13 @@ import time
 import logging
 import hashlib
 import asyncio
+import markdown
 from route import get
 from aiohttp import web
 from models import User
 from config import configs
 from api_errors import APIPermissionError
+from markdown.extensions.toc import TocExtension
 
 
 logging.basicConfig(level=logging.INFO)
@@ -159,3 +161,16 @@ def get_page_index(page_str):
     if page < 1:
         page = 1
     return page
+
+
+def mark(text):
+    result = markdown.markdown(
+        text,
+        extensions=[
+            'markdown.extensions.extra',
+            'mdx_math',
+            'markdown.extensions.codehilite',
+            TocExtension(baselevel=3)
+        ]
+    )
+    return result
