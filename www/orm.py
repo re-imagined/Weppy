@@ -279,6 +279,8 @@ class Model(dict, metaclass=ModelMetaClass):
             sql.append(where)
         if args is None:
             args = []
+        else:
+            args = list(args)
         if order_by:
             sql.append('order_by')
             sql.append(order_by)

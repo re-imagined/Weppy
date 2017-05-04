@@ -177,6 +177,8 @@ def api_get_all_categeries(request):
 
 @get('/api/get_blog/{blog_id}')
 def api_get_blog(request, *, blog_id):
+    if not blog_id or not blog_id.strip():
+        raise APIValueError('blog_id', 'blog_id cannot be empty.')
     blog = yield from Blog.find(blog_id.strip())
     categery = yield from Categery.find(blog.categery_id)
     blog.categery_name = categery.name
@@ -197,6 +199,33 @@ def api_get_blogs(request, *, page='1'):
         return dict(page=page, blogs=())
     blogs = yield from Blog.find_all(
         orderBy='id desc', limit=(page.offset, page.limit)
+    )
+    for blog in blogs:
+        time = str(blog.created_at).split()
+        blog.created_at = time[0]
+        categery = yield from Categery.find(blog.categery_id)
+        blog.categery_name = categery.name
+    return dict(
+        page=page,
+        blogs=blogs
+    )
+
+
+@get('/api/get_blog_by_categery_id/{categery_id}')
+def api_get_blog_by_categery_id(request, *, categery_id, page='1'):
+    if not categery_id or not categery_id.strip():
+        raise APIValueError('categery_id', 'categery_id cannot be empty.')
+    num = yield from Blog.get_count(
+        'id', 'categery_id=?',
+        (categery_id.strip(),)
+    )
+    page_index = get_page_index(page)
+    page = Page(num, page_index)
+    blogs = yield from Blog.find_all(
+        'categery_id=?',
+        (categery_id.strip(), ),
+        orderBy='id desc',
+        limit=(page.offset, page.limit)
     )
     for blog in blogs:
         time = str(blog.created_at).split()

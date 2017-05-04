@@ -69,7 +69,6 @@ def edit_blog(request, *, blog_id):
 def get_blog_by_title_en(request, *, title_en):
     blog = yield from Blog.find_all("title_en=?", (title_en,))
     blog = blog[0]
-    # blog.marked_content = markdown(blog.content)
     blog.marked_content = mark(
         blog.content,
     )
