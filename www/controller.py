@@ -27,13 +27,6 @@ def base():
     }
 
 
-@get('/timepickertest')
-def timepickertest():
-    return {
-        '__template__': 'timepickertest.html'
-    }
-
-
 @get('/sign_up')
 def sign_up():
     return {
@@ -156,8 +149,8 @@ def get_page_index(page_str):
     page = 1
     try:
         page = int(page_str)
-    except ValueError as e:
-        pass
+    except ValueError:
+        page = 1
     if page < 1:
         page = 1
     return page

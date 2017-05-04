@@ -1,12 +1,12 @@
 # -*- coding: UTF-8 -*-
 import os
 import orm
+import sys
 import json
-import time
 import logging
 import asyncio
-import datetime
 from aiohttp import web
+from autoreload import start_watch
 from route import add_routes, add_static
 from jinja2 import Environment, FileSystemLoader
 from controller import get_user_by_cookie, COOKIE_NAME
@@ -154,6 +154,8 @@ def init(loop):
     logging.info('server started at {}:{}...'.format(host, app_port))
     return srv
 
-loop = asyncio.get_event_loop()
-loop.run_until_complete(init(loop))
-loop.run_forever()
+
+if __name__ == '__main__':
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(init(loop))
+    loop.run_forever()

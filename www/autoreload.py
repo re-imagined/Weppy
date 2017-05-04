@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 """This module is used to reload the modules automatically when any changes is
 detected. Only use for development"""
 
@@ -40,8 +41,8 @@ def kill_process():
         process = None
 
 
-def start_process():
-    global process, command
+def start_process(command):
+    global process
     log('start process %s...' % ' '.join(command))
     process = subprocess.Popen(
         command,
@@ -56,12 +57,12 @@ def restart_process():
     start_process()
 
 
-def start_watch(path, callback):
+def start_watch(path, command):
     observer = Observer()
     observer.schedule(Monitor(restart_process), path, recursive=True)
     observer.start()
     log('Watching directory %s...' % path)
-    start_process()
+    start_process(command)
     try:
         while True:
             time.sleep(0.5)
@@ -79,4 +80,4 @@ if __name__ == '__main__':
         argv.insert(0, 'python3')
     command = argv
     path = os.path.abspath('.')  # use the same directory path
-    start_watch(path, None)
+    start_watch(path, command)
