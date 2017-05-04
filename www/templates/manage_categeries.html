@@ -35,9 +35,11 @@ Manage Categeries
 
     </script>
 {% endblock %}
+
 {% block sidebarli %}
 {% include 'sidebar.html' %}
 {% endblock %}
+
 {% block content %}
     <table id='vm' class="mui-table mui-table--bordered">
         <thead>
@@ -58,4 +60,5 @@ Manage Categeries
             </tr>
         </tbody>
     </table>
+    &nbsp;&nbsp;&nbsp;<a href="/x/admin/blogs/add_categery" class="mui-btn mui-btn--fab mui-btn--primary">+</a>
 {% endblock %}

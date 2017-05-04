@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """This module is used to reload the modules automatically when any changes is
-detected."""
+detected. Only use for development"""
 
 import os
 import sys
@@ -22,6 +22,10 @@ class Monitor(FileSystemEventHandler):
         self.restart = func
 
     def on_any_event(self, event):
+        """
+        The original method on_any_event in class FileSystemEventHandler is
+        empty. There is a completement.
+        """
         if event.src_path.endswith('.py'):
             log('Python source file changed: %s' % event.src_path)
             self.restart()
