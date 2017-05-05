@@ -206,12 +206,12 @@ class ModelMetaClass(type):
             raise Exception("Primary key is not found")
         for key in mappings.keys():
             attrs.pop(key)
-        escaped_fields = list(map(lambda f: "`%s`" % f, fields))
+        escaped_fields = list(map(lambda f: "a.`%s`" % f, fields))
         attrs['__mappings__'] = mappings
         attrs['__table_name__'] = table_name
         attrs['__primary_key__'] = primary_key
         attrs['__fields__'] = fields
-        attrs['__select__'] = 'select `%s`, %s from `%s`' % (
+        attrs['__select__'] = 'select a.`%s`, %s from `%s` a' % (
             primary_key, ', '.join(escaped_fields), table_name
         )
         attrs['__insert__'] = 'insert into  `%s` (%s, `%s`) values(%s)' % (
@@ -274,13 +274,40 @@ class Model(dict, metaclass=ModelMetaClass):
         sql = [cls.__select__]
         order_by = kwargs.get('order_by', None)
         limit = kwargs.get('limit', None)
+        join_type = kwargs.get('join_type', None)
+        join_table = kwargs.get('join_table', None)
+        join_on = kwargs.get('join_on', None)
+        join_field = kwargs.get('join_field', None)
+        if (
+            join_type and join_table and join_on and join_field and
+            isinstance(join_on, tuple) and isinstance(join_field, tuple) and
+            len(join_on) == 2
+                ):
+            join_field = list(map(
+                lambda f: "b.`{0}` as {1}_{0}".format(
+                    f, join_table
+                ), join_field)
+            )
+            from_index = sql[0].index('from')
+            for field in join_field:
+                sql[0] = sql[0][:from_index] + ',' + \
+                    field + ' ' + sql[0][from_index:]
+            sql.append(join_type)
+            sql.append(join_table)
+            sql.append('as b')
+            sql.append('on')
+            sql.append('a'+'.'+join_on[0])
+            sql.append('=')
+            sql.append('b'+'.'+join_on[1])
         if where:
             sql.append('where')
+            where = 'a.' + where
             sql.append(where)
         if args is None:
             args = []
         else:
             args = list(args)
+
         if order_by:
             sql.append('order_by')
             sql.append(order_by)

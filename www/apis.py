@@ -223,7 +223,7 @@ def api_get_blog_by_categery_id(request, *, categery_id, page='1'):
     page = Page(num, page_index)
     blogs = yield from Blog.find_all(
         'categery_id=?',
-        (categery_id.strip(), ),
+        (categery_id.strip(),),
         orderBy='id desc',
         limit=(page.offset, page.limit)
     )

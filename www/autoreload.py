@@ -23,10 +23,6 @@ class Monitor(FileSystemEventHandler):
         self.restart = func
 
     def on_any_event(self, event):
-        """
-        The original method on_any_event in class FileSystemEventHandler is
-        empty. There is a completement.
-        """
         if event.src_path.endswith('.py'):
             log('Python source file changed: %s' % event.src_path)
             self.restart()
@@ -41,8 +37,8 @@ def kill_process():
         process = None
 
 
-def start_process(command):
-    global process
+def start_process():
+    global process, command
     log('start process %s...' % ' '.join(command))
     process = subprocess.Popen(
         command,
@@ -57,12 +53,12 @@ def restart_process():
     start_process()
 
 
-def start_watch(path, command):
+def start_watch(path):
     observer = Observer()
     observer.schedule(Monitor(restart_process), path, recursive=True)
     observer.start()
     log('Watching directory %s...' % path)
-    start_process(command)
+    start_process()
     try:
         while True:
             time.sleep(0.5)
@@ -80,4 +76,4 @@ if __name__ == '__main__':
         argv.insert(0, 'python3')
     command = argv
     path = os.path.abspath('.')  # use the same directory path
-    start_watch(path, command)
+    start_watch(path)
