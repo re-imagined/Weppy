@@ -138,6 +138,18 @@ def api_edit_blog(
     return blog
 
 
+@post('/api/delete_blog')
+def api_delete_blog(request, *, id):
+    if not check_admin(request):
+        return dict(message='no permition')
+    if not id:
+        raise APIValueError('ID', 'ID is Invalid')
+    print(id)
+    blog = yield from Blog.find(id)
+    yield from blog.remove()
+    return dict(id=id)
+
+
 @post('/api/add_categery')
 def api_add_categery(request, *, name):
     if not check_admin(request):

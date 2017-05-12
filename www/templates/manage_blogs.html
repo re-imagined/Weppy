@@ -20,13 +20,13 @@ function initVM(data) {
                 location.assign('/x/admin/blogs/edit_blog/' + blog.id);
             },
             delete_blog: function (blog) {
-                if (confirm('确认要删除“' + blog.name + '”？删除后不可恢复！')) {
-
-                    $.post(action, blog.id, function (rtn) {
+                console.log(blog.title);
+                if (confirm('确认要删除 ' + blog.title + ' ？删除后不可恢复！')) {
+                    action = "/api/delete_blog";
+                    $.post(action, {id:blog.id}, function (rtn) {
                         {
-                            alert(action);
                             alert('删除成功！');
-                            //refresh();
+                            window.location.reload();
                         }
                     }, 'json');
                 }
@@ -49,7 +49,7 @@ $(function() {
 {% block sidebarli %}
 {% include 'sidebar.html' %}
 {% endblock %}
-
+{% block page_title %}共{{ page.item_count}}篇博文{% endblock %}
 {% block content %}
 
         <div id="vm" class="">

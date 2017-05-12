@@ -383,7 +383,7 @@ class Model(dict, metaclass=ModelMetaClass):
     @asyncio.coroutine
     def remove(self):
         args = [self.getValue(self.__primary_key__)]
-        rows = yield from execute(self.__update__, args)
+        rows = yield from execute(self.__delete__, args)
         if rows != 1:
             logging.warn(
                 'failed to remove by primary key: affected rows: %s' % rows
