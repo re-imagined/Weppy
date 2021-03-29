@@ -10,7 +10,7 @@ MarkupSafe==0.23
 multidict==2.1.4
 packaging==16.8
 pathtools==0.1.2
-Pygments==2.2.0
+Pygments==2.7.4
 PyMySQL==0.7.9
 pyparsing==2.2.0
 python-markdown-math==0.3
